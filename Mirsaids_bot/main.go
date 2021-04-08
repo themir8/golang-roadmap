@@ -6,11 +6,24 @@ import (
 
 	"github.com/joho/godotenv"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 const (
 	token = "1616952945:AAFcXHr7oYqhyXC1-eVkw2ZjzHn-mt83vAo"
+)
+
+var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonURL("1.com", "http://1.com"),
+		tgbotapi.NewInlineKeyboardButtonData("2", "2"),
+		tgbotapi.NewInlineKeyboardButtonData("3", "3"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("4", "4"),
+		tgbotapi.NewInlineKeyboardButtonData("5", "5"),
+		tgbotapi.NewInlineKeyboardButtonData("6", "6"),
+	),
 )
 
 type username struct {
@@ -28,17 +41,28 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates, err := bot.GetUpdatesChan(u)
+	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil { // ignore any non-Message Updates
-			continue
-		}
+		if update.Message != nil { // ignore any non-Message Updates
+			if !update.Message.IsCommand() {
+				MessageHandler(update, bot)
+			} else if update.Message.IsCommand() {
+				CommandHandler(update, bot)
+			}
+		} else if update.CallbackQuery != nil {
+			// Respond to the callback query, telling Telegram to show the user
+			// a message with the data received.
+			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
+			if _, err := bot.Request(callback); err != nil {
+				panic(err)
+			}
 
-		if !update.Message.IsCommand() {
-			MessageHandler(update, bot)
-		} else if update.Message.IsCommand() {
-			CommandHandler(update, bot)
+			// And finally, send a message containing the data received.
+			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Data)
+			if _, err := bot.Send(msg); err != nil {
+				panic(err)
+			}
 		}
 
 		log.Println(username{update.Message.From.UserName, update.Message.Text})
@@ -50,21 +74,26 @@ func CommandHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
+	// If the message was open, add a copy of our numeric keyboard.
 	// Extract the command from the Message.
 	switch update.Message.Command() {
 	case "SocialMedia":
 		msg.Text = os.Getenv("SocialMedia")
 	case "sayhi":
 		msg.Text = "Hi :)"
+		msg.ReplyMarkup = numericKeyboard
 	case "status":
 		msg.Text = "I'm ok."
 	default:
 		msg.Text = "I don't know that command"
 	}
 
-	bot.Send(msg)
+	// Send the message.
+	if _, err = bot.Send(msg); err != nil {
+		panic(err)
+	}
 }
 
 func MessageHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
