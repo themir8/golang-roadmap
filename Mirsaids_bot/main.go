@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 
@@ -15,7 +14,9 @@ const (
 
 var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonURL("1.com", "http://1.com"),
+		tgbotapi.NewInlineKeyboardButtonURL("Instagram", "https://instagram.com/mirsaid.m8/"),
+		tgbotapi.NewInlineKeyboardButtonURL("Telegram", "https://t.me/Mirzakhidov_M/"),
+		tgbotapi.NewInlineKeyboardButtonURL("Github", "https://github.com/mirsaid-mirzohidov/"),
 		tgbotapi.NewInlineKeyboardButtonData("2", "2"),
 		tgbotapi.NewInlineKeyboardButtonData("3", "3"),
 	),
@@ -25,10 +26,6 @@ var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardButtonData("6", "6"),
 	),
 )
-
-type username struct {
-	x, y string
-}
 
 func main() {
 	bot, err := tgbotapi.NewBotAPI(token)
@@ -64,8 +61,6 @@ func main() {
 				panic(err)
 			}
 		}
-
-		log.Println(username{update.Message.From.UserName, update.Message.Text})
 	}
 }
 
@@ -74,13 +69,13 @@ func CommandHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
 	// If the message was open, add a copy of our numeric keyboard.
 	// Extract the command from the Message.
 	switch update.Message.Command() {
 	case "SocialMedia":
-		msg.Text = os.Getenv("SocialMedia")
+		msg.ParseMode = "Instagram: <a href='https://www.instagram.com/mirsaid.m8/'>@mirsaid.m8</a> <br>Telegram: @Mirzakhidov_M"
 	case "sayhi":
 		msg.Text = "Hi :)"
 		msg.ReplyMarkup = numericKeyboard
