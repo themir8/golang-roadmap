@@ -10,13 +10,11 @@ func main() {
 }
 
 func fizzbuzz(num int) {
-	if num/3 == 0 {
-		log.Println("Fizz")
-	}
-	if num/5 == 0 {
-		log.Println("Buzz")
-	}
-	if num/15 == 0 {
+	if num % 15 == 0 {
 		log.Println("FizzBuzz")
+	} else if num % 5 == 0 {
+		log.Println("Buzz")
+	} else if num % 3 == 0 {
+		log.Println("Fizz")
 	}
 }
