@@ -12,9 +12,12 @@ func main() {
 
 func fizzbuzz(num int) {
 	if num%3 == 0 {
-		fmt.Printf("Fizz")
-	} else if num%5 == 0 {
-		fmt.Printf("Buzz")
-	} else if num%1
-	fmt.Printf("\n")
+		fmt.Println("Fizz")
+	}
+	if num%5 == 0 {
+		fmt.Println("Buzz")
+	}
+	if num%15 == 0 {
+		fmt.Println("FizzBuzz")
+	}
 }
