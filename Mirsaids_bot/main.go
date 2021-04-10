@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 
-	"github.com/joho/godotenv"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -17,7 +15,7 @@ var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardButtonURL("Instagram", "https://instagram.com/mirsaid.m8/"),
 		tgbotapi.NewInlineKeyboardButtonURL("Telegram", "https://t.me/Mirzakhidov_M/"),
 		tgbotapi.NewInlineKeyboardButtonURL("Github", "https://github.com/mirsaid-mirzohidov/"),
-		tgbotapi.NewInlineKeyboardButtonData("2", "2"),
+		tgbotapi.NewInlineKeyboardButtonData("2", "mirsaid"),
 		tgbotapi.NewInlineKeyboardButtonData("3", "3"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
@@ -48,9 +46,13 @@ func main() {
 				CommandHandler(update, bot)
 			}
 		} else if update.CallbackQuery != nil {
+			// Callback handler
+			CallbackHandler(update.CallbackQuery)
+
 			// Respond to the callback query, telling Telegram to show the user
 			// a message with the data received.
 			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
+
 			if _, err := bot.Request(callback); err != nil {
 				panic(err)
 			}
@@ -65,22 +67,20 @@ func main() {
 }
 
 func CommandHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
 	// If the message was open, add a copy of our numeric keyboard.
 	// Extract the command from the Message.
 	switch update.Message.Command() {
 	case "SocialMedia":
-		msg.ParseMode = "Instagram: <a href='https://www.instagram.com/mirsaid.m8/'>@mirsaid.m8</a> <br>Telegram: @Mirzakhidov_M"
+		msg.Text = "Instagram: mirsaid.m8\nTelegram: Mirzakhidov_M"
+		msg.ReplyMarkup = numericKeyboard
 	case "sayhi":
 		msg.Text = "Hi :)"
-		msg.ReplyMarkup = numericKeyboard
 	case "status":
 		msg.Text = "I'm ok."
+		log.Println(update.Message.From.ID)
 	default:
 		msg.Text = "I don't know that command"
 	}
@@ -102,4 +102,10 @@ func MessageHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	}
 
 	bot.Send(msg)
+}
+
+func Callbackhandler(callback string) {
+	if callback.Data == "mirsaid" {
+		log.Println(callback.ID)
+	}
 }
