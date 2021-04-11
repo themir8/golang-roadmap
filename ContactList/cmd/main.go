@@ -6,6 +6,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"github.com/mirsaid-mirzohidov/ContactList/contact"
 )
 
 func main() {
@@ -19,17 +21,17 @@ func main() {
 	defer db.Close()
 
 	// person.delete(db)
-	person := Person{FirstName: "Mirsaid", LastName: "Mirzohidov", Phone: "+998998141352"}
+	person := contact.Person{FirstName: "Mirsaid", LastName: "Mirzohidov", Phone: "+998998141352"}
 
-	person.save(db)
+	person.Save(db)
 
-	var p2 Person
+	var p2 contact.Person
 
 	p2.get(db, person.ID)
 
 	fmt.Println(person)
 	fmt.Println(p2)
 
-	fmt.Println(PersonList(db))
+	// fmt.Println(contact.List(db))
 
 }
