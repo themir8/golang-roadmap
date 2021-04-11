@@ -27,7 +27,7 @@ func main() {
 
 	var p2 contact.Person
 
-	p2.get(db, person.ID)
+	p2.Get(db, person.ID)
 
 	fmt.Println(person)
 	fmt.Println(p2)

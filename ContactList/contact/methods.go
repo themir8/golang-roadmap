@@ -6,11 +6,9 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-
-	"github.com/mirsaid-mirzohidov/ContactList/contact"
 )
 
-func (p contact.Person) Save(db *sqlx.DB) id {
+func (p *Person) Save(db *sqlx.DB) {
 	err := db.QueryRowx("INSERT INTO contactList(first_name, last_name, phone) values($1, $2, $3) RETURNING id", p.FirstName, p.LastName, p.Phone).Scan(&p.ID)
 	if err != nil {
 		log.Println(err, " Bla Bla2")
@@ -19,7 +17,7 @@ func (p contact.Person) Save(db *sqlx.DB) id {
 	fmt.Println("person saved")
 }
 
-func (p *contact.Person) Get(db *sqlx.DB, id int) {
+func (p *Person) Get(db *sqlx.DB, id int) {
 	row, err := db.Queryx("SELECT id, first_name, last_name, phone FROM contactList WHERE id = $1 LIMIT 1", id)
 	if err != nil {
 		log.Println(err, " Bla Bla2")
@@ -36,16 +34,16 @@ func (p *contact.Person) Get(db *sqlx.DB, id int) {
 	fmt.Println("person found")
 }
 
-func (p *contact.Person) Delete(db *sqlx.DB) {
+func (p *Person) Delete(db *sqlx.DB) {
 	tx := db.MustBegin()
 	tx.MustExec("DELETE FROM contactList WHERE id = $1", p.ID)
 	tx.Commit()
 }
 
-func List(db *sqlx.DB) (persons []contact.Person) {
+func List(db *sqlx.DB) (persons []Person) {
 	rows, _ := db.Queryx("SELECT * FROM contactList")
 	for rows.Next() {
-		var person contact.Person
+		var person Person
 		err := rows.Scan(&person.ID, &person.FirstName, &person.LastName, &person.Phone)
 		if err != nil {
 			log.Println(err, " Bla Bla2")
