@@ -9,7 +9,7 @@
 4. **_Tasks for syntax_**: ✅
    1. Fibonacci
    2. FizBuzz ✅
-   3. Palindrome
+   3. Palindrome ✅
    4. Odd even sum
    5. Has duplicate element in array ✅
 5. **_Git_**  ✅
