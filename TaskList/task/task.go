@@ -6,7 +6,7 @@ type Task struct {
 	Body  string
 }
 
-func NewTask() TaskI {
+func NewTask() TaskInter {
 	return &TaskList{}
 }
 

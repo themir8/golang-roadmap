@@ -1,6 +1,6 @@
 package task
 
-type TaskI interface {
+type TaskInter interface {
 	Add(tlist *Task)
 	Update(id uint64, tlist *Task) error
 	Delete(id uint64) error
