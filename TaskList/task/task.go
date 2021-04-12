@@ -6,10 +6,6 @@ type Task struct {
 	Body  string
 }
 
-func NewTask() TaskInter {
-	return &TaskList{}
-}
-
-type TaskList struct {
-	Tasks []*Task
-}
+// func NewTask() TaskInter {
+// 	return []Task{}
+// }
