@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	token = "1616952945:AAFcXHr7oYqhyXC1-eVkw2ZjzHn-mt83vAo"
+	token = "1616952945:AAEPvOGSq6Uz2IesjFJHXXjXaXnRyXPx8O4"
 )
 
 var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
@@ -86,7 +86,7 @@ func CommandHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	}
 
 	// Send the message.
-	if _, err = bot.Send(msg); err != nil {
+	if _, err := bot.Send(msg); err != nil {
 		panic(err)
 	}
 }
@@ -104,7 +104,7 @@ func MessageHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	bot.Send(msg)
 }
 
-func Callbackhandler(callback string) {
+func CallbackHandler(callback *tgbotapi.CallbackQuery) {
 	if callback.Data == "mirsaid" {
 		log.Println(callback.ID)
 	}
